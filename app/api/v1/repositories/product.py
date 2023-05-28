@@ -108,18 +108,16 @@ def get_all_by_category(category_id: int, db: Session, current_user: UserIn):
 
 
 def create(req: ProductIn, current_user: UserIn):
+    req.product_name = req.product_name.lower()
+    product_dict = req.dict()
+    product_dict["product_creator"] = current_user["id"]
+    print(product_dict)
+    new_product = Product(**product_dict)
     try:
-        req.product_name = req.product_name.lower()
-        product_dict = req.dict()
-        product_dict["product_creator"] = current_user["id"]
-        print(product_dict)
-        new_product = Product(**product_dict)
         operation = CRUD().add(new_product)
-        return jsonable_encoder(new_product)
     except:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Product data is not valid"
-        )
+        raise ValueError("Error")
+    return jsonable_encoder(new_product)
 
 
 def get_product_by_id(id: int, db: Session):
