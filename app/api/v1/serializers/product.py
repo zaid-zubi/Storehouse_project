@@ -18,14 +18,13 @@ class ProductIn(BaseModel):
 
     @validator("product_name")
     def validate_name(cls, v: str):
-        if len(v) > 50:
-            raise ValueError("Product Name is More Than 50 letters")
-        return v
+        
+        return v.lower()
 
     @validator("quantity")
     def validate_quantity(cls, v: int):
         if v < 0:
-            raise ValueError("Qunaitity Is Less Than Zero")
+            raise ValueError("Quantity Is Less Than Zero")
         return v
 
     @validator("price")
@@ -45,23 +44,23 @@ class ProductIn(BaseModel):
         currency: str = Form("JOD"),
         category_id: int = Form(),
     ):
-        URL_IMAGE_FOLDER = "app/api/v1/images_products"
-        image.filename = RandomNumBillion.generate()
-        image_url = f"{URL_IMAGE_FOLDER}/{image.filename}.JPG"
-        print(image_url)
-        if os.path.isdir(URL_IMAGE_FOLDER):
-            with open(image_url, "wb") as buffer:
-                shutil.copyfileobj(image.file, buffer)
-        else:
-            print("folder not exist")
-        cloudinary.uploader.upload(image_url, public_id=f"{image.filename}")
-        url, options = cloudinary_url(
-            f"{image_url}", width=100, height=150, crop="fill"
-        )
-        x_url = f"https://res.cloudinary.com/dgqc75jdf/image/upload/{image.filename}"
-        print(x_url)
-
-        return cls(
+        try:
+            URL_IMAGE_FOLDER = "app/api/v1/images_products"
+            image.filename = RandomNumBillion.generate()
+            image_url = f"{URL_IMAGE_FOLDER}/{image.filename}.JPG"
+            print(image_url)
+            if os.path.isdir(URL_IMAGE_FOLDER):
+                with open(image_url, "wb") as buffer:
+                    shutil.copyfileobj(image.file, buffer)
+            else:
+                print("folder not exist")
+            cloudinary.uploader.upload(image_url, public_id=f"{image.filename}")
+            url, options = cloudinary_url(
+                f"{image_url}", width=100, height=150, crop="fill"
+            )
+            x_url = f"https://res.cloudinary.com/dgqc75jdf/image/upload/{image.filename}"
+            print(x_url)
+            return cls(
             product_name=product_name,
             description=description,
             quantity=quantity,
@@ -70,6 +69,11 @@ class ProductIn(BaseModel):
             currency=currency,
             category_id=category_id,
         )
+        except Exception as e:
+            raise ValueError("Error")
+            
+
+        
 
 
 class UpdateProductPart(BaseModel):
@@ -91,21 +95,30 @@ class UpdateProductPart(BaseModel):
         currency: str = Form("JOD"),
         category_id: int = Form(),
     ):
-        URL_IMAGE_FOLDER = "app/api/v1/images_products"
-        image.filename = RandomNumBillion.generate()
-        image_url = f"{URL_IMAGE_FOLDER}/{image.filename}.JPG"
-        print(image_url)
-        if os.path.isdir(URL_IMAGE_FOLDER):
-            with open(image_url, "wb") as buffer:
-                shutil.copyfileobj(image.file, buffer)
-        else:
-            print("folder not exist")
-        return cls(
-            product_name=product_name,
-            description=description,
-            quantity=quantity,
-            price=price,
-            image=image_url,
-            currency=currency,
-            category_id=category_id,
-        )
+        try:
+            URL_IMAGE_FOLDER = "app/api/v1/images_products"
+            image.filename = RandomNumBillion.generate()
+            image_url = f"{URL_IMAGE_FOLDER}/{image.filename}.JPG"
+            print(image_url)
+            if os.path.isdir(URL_IMAGE_FOLDER):
+                with open(image_url, "wb") as buffer:
+                    shutil.copyfileobj(image.file, buffer)
+            else:
+                print("folder not exist")
+            cloudinary.uploader.upload(image_url, public_id=f"{image.filename}")
+            url, options = cloudinary_url(
+                f"{image_url}", width=100, height=150, crop="fill"
+            )
+            x_url = f"https://res.cloudinary.com/dgqc75jdf/image/upload/{image.filename}"
+            print(x_url)
+            return cls(
+                product_name=product_name,
+                description=description,
+                quantity=quantity,
+                price=price,
+                image=x_url,
+                currency=currency,
+                category_id=category_id,
+            )
+        except Exception as e:
+            raise ValueError("Error")

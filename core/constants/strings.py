@@ -22,9 +22,18 @@ UNACTIVE_USER = {
 }
 
 # Product Strings
+NO_PRODUCTS_FOR_DISPLAY = {"en":"No Products",
+            "ar":"لا يوجد منتجات لعرضها"}
 PRODUCT_NOT_FOUND = {"en": "Product Not Found", "ar": "المنتج غير موجود"}
 INVALID_PRODUCT_NAME = {"en": "Invalid Product Name", "ar": "اسم المنتج غير صالح"}
 INVALID_PRODUCT_PRICE = {"en": "Invalid Product Price", "ar": "سعر المنتج غير صالح"}
-
+NO_PRODUCTS_IN_FAVOURITE_LIST = {
+        "en":"No Products in Favourites List",
+        "ar": "لا يوجد منتجات في قائمة المفضلة"
+    }
 # Category Strings
 CATEGORY_NOT_FOUND = {"en": "Category Not Found", "ar": "الفئة غير موجودة"}
+CANNOT_DELETE_CATEGORY = {
+    "en":"Can't delete category",
+    "ar": "لا يمكن حذف الفئة"
+}

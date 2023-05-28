@@ -99,3 +99,6 @@ class UnactiveUser(Exception):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=strings.UNACTIVE_USER
         )
+class CategoryHasProducts(Exception):
+    def __init__(self):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=strings.CANNOT_DELETE_CATEGORY)

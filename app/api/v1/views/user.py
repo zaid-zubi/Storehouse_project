@@ -1,10 +1,11 @@
 from fastapi import APIRouter, status
-from app.api.v1.repositories.user import *
-from app.api.v1.dependancies.authorization import *
-from app.api.v1.serializers.user import UserIn, Token, ResponseUser
+from fastapi.encoders import jsonable_encoder
 from utils.http_response import http_response
 from core.constants.response_messages import ResponseConstants
-from core.exceptions import error_messages
+from app.api.v1.repositories.user import create
+from app.api.v1.dependancies.authorization import *
+from app.api.v1.serializers.user import UserIn, Token, ResponseUser
+
 
 router = APIRouter(prefix="", tags=["auth"])
 
@@ -32,21 +33,23 @@ def login_for_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
+def get_token(token: str, db: Session):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        print("username extracted is ", email)
+        if email is None:
+            raise error_messages.InvalidUserName
+    except JWTError as e:
+        raise error_messages.InvalidCredentials from e
+    user = get_user(email=email, db=db)
+    if user is None:
+        raise error_messages.InvalidUserName
+    return jsonable_encoder(user)
 
 @router.get("/me", response_model=ResponseUser)
 async def get_current_user_from_token(
     token: str = Depends(oauth2_scheme), db=Depends(CRUD().db_conn)
 ):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        print("username extracted is ", username)
-        if username is None:
-            raise error_messages.InvalidUserName
-    except JWTError as e:
-        raise error_messages.InvalidCredentials from e
-    user = get_user_by_name(username=username, db=db)
-    if user is None:
-        raise error_messages.InvalidUserName
-    return jsonable_encoder(user)
+    return get_token(token,db)
+

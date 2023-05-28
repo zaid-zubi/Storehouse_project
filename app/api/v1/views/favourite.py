@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from utils.http_response import http_response
 from app.api.v1.repositories.common import CRUD
 from app.api.v1.serializers.user import UserIn
-from app.api.v1.models.user import User
 from app.api.v1.views.user import get_current_user_from_token
 from core.constants.response_messages import ResponseConstants
 from app.api.v1.repositories.product import (
@@ -11,7 +10,6 @@ from app.api.v1.repositories.product import (
     get_favourite_products,
     remove_from_favourite,
 )
-import getmac
 
 router = APIRouter()
 

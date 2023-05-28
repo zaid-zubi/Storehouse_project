@@ -15,6 +15,9 @@ async def add_product(
     product=Depends(ProductIn.as_form),
     current_user: UserIn = Depends(get_current_user_from_token),
 ):
+    """
+Try to use postman, don't forget to use token
+    """
     return http_response(
         message=ResponseConstants.CREATED_MSG,
         status=status.HTTP_201_CREATED,
@@ -51,11 +54,11 @@ async def delete_product(
 
 @router.get("/")
 async def retrieve_products(
-    product_name: str = None,
+    product_id: int = None,
     db=Depends(CRUD().db_conn),
     current_user: UserIn = Depends(get_current_user_from_token),
 ):
-    if not product_name:
+    if not product_id:
         return http_response(
             message=ResponseConstants.RETRIEVED_MSG,
             status=status.HTTP_200_OK,
@@ -64,27 +67,31 @@ async def retrieve_products(
     return http_response(
         message=ResponseConstants.RETRIEVED_MSG,
         status=status.HTTP_200_OK,
-        data=get_one(product_name, db, current_user),
+        data=get_one(product_id, db, current_user),
     )
 
 
-@router.get("/{category}")
+@router.get("/category/{category}")
 async def retrieve_user_products(
-    category: str | None = None,
+    category: int | None = None,
     db=Depends(CRUD().db_conn),
     current_user: UserIn = Depends(get_current_user_from_token),
 ):
-    return http_response(
-        message=ResponseConstants.RETRIEVED_MSG,
-        status=status.HTTP_200_OK,
-        data=get_all_by_category(category, db, current_user),
-    )
+    if not category:
+        return http_response(
+            message=ResponseConstants.RETRIEVED_MSG,
+            status=status.HTTP_200_OK,
+            data=get_all(db,current_user),
+        )
+    else:
+        return http_response(message=ResponseConstants.RETRIEVED_MSG,status=status.HTTP_200_OK,data=get_all_by_category(category, db, current_user))
+    
 
 
-@router.get("/{product_name}/image", response_class=RedirectResponse)
+@router.get("/{product_id}/image", response_class=RedirectResponse)
 async def show_image(
-    product_name: str,
+    product_id: int,
     db: Session = Depends(CRUD().db_conn),
     current_user: UserIn = Depends(get_current_user_from_token),
 ):
-    return show_product_image_from_cloudinary(product_name, db, current_user)
+    return show_product_image_from_cloudinary(product_id, db, current_user)

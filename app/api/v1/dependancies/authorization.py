@@ -4,12 +4,12 @@ from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from app.api.v1.models.user import User
 from typing import Union
+from core.exceptions import error_messages
+from app.api.v1.models.user import User
 from app.api.v1.repositories.common import CRUD
 from app.api.v1.serializers.user import UserIn, Token, TokenData
 from app.api.v1.dependancies.hash import Hasher
-from core.exceptions import error_messages
 
 SECRET_KEY = "skeleton"
 ALGORITHM = "HS256"
@@ -22,13 +22,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/users/login")
 
 
-def get_user_by_name(db: Session, username: str):
-    user_data = db.query(User).filter_by(username=username).first()
+def get_user(db: Session, email: str):
+    user_data = db.query(User).filter_by(email=email).first()
     return user_data if user_data else False
 
 
-def authenticate_user(username: str, password: str, db):
-    user = get_user_by_name(db=db, username=username)
+def authenticate_user(email: str, password: str, db):
+    email = email.lower()
+    user = get_user(db=db, email=email)
     print(user)
     if not user:
         return False
@@ -50,13 +51,13 @@ async def get_current_user(
 ):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+        if email is None:
             raise error_messages.InvalidCredentials
-        token_data = TokenData(username=username)
+        token_data = TokenData(email=email)
     except JWTError as e:
         raise error_messages.InvalidCredential from e
-    user = get_user_by_name(db, username=token_data.username)
+    user = get_user(db, email=token_data.email)
     if user is None:
         raise error_messages.InvalidCredentials
     return user
