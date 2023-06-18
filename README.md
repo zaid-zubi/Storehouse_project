@@ -3,6 +3,7 @@ Quickstart
 ----------
 
 First, clone the project on your local machine: ::
+
 https://github.com/zaid-zubi/Storehouse_project.git
 
 Then activate poetry by typing: ::
