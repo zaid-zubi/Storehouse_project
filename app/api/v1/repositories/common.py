@@ -2,7 +2,6 @@ from core.database.settings.session_maker import DBSession
 
 
 def crud(query):
-
     with DBSession() as db:
         db.add(query)
         db.commit()
@@ -11,7 +10,6 @@ def crud(query):
 
 
 class CRUD:
-
     def __init__(self):
         self._query = None
         self.db = None
@@ -28,7 +26,11 @@ class CRUD:
         db.commit()
         db.refresh(self._query)
         return self._query
-    
+
+    def update(self, _query, new_data: dict):
+        for key, value in new_data.items():
+            setattr(_query, key, value)
+        return _query
 
     # def update(self, _query):
     #     self._query = _query

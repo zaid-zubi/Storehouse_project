@@ -1,6 +1,8 @@
 from pydantic import BaseModel, validator
 import re
-from email_validator import validate_email,EmailNotValidError
+from email_validator import validate_email, EmailNotValidError
+
+
 class UserIn(BaseModel):
     username: str
     email: str
@@ -13,7 +15,6 @@ class UserIn(BaseModel):
             return username
         except:
             raise ValueError("Username is invalid")
-            
 
     @validator("email")
     def validate_email(cls, v: str):
@@ -23,10 +24,7 @@ class UserIn(BaseModel):
             return email.lower()
         except EmailNotValidError as e:
             raise ValueError(str(e))
-            
-        
-        
-            
+
     @validator("password")
     def validate_password(cls, v: str):
         regex = (
@@ -38,7 +36,6 @@ class UserIn(BaseModel):
             reason = "Invalid Password"
             raise ValueError(f"{reason}")
         return v
-            
 
 
 class UserLogin(BaseModel):
@@ -58,3 +55,13 @@ class TokenData(BaseModel):
 class ResponseUser(BaseModel):
     username: str
     email: str
+
+
+class CountryIn(BaseModel):
+    name: str
+    description_ar: str
+    description_en: str
+    is_banned: bool
+    is_active: bool
+    phone_code: str
+    note: str

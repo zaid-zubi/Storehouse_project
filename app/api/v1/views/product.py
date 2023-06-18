@@ -16,7 +16,7 @@ async def add_product(
     current_user: UserIn = Depends(get_current_user_from_token),
 ):
     """
-Try to use postman, don't forget to use token
+    Try to use postman, don't forget to use token
     """
     return http_response(
         message=ResponseConstants.CREATED_MSG,
@@ -81,11 +81,14 @@ async def retrieve_user_products(
         return http_response(
             message=ResponseConstants.RETRIEVED_MSG,
             status=status.HTTP_200_OK,
-            data=get_all(db,current_user),
+            data=get_all(db, current_user),
         )
     else:
-        return http_response(message=ResponseConstants.RETRIEVED_MSG,status=status.HTTP_200_OK,data=get_all_by_category(category, db, current_user))
-    
+        return http_response(
+            message=ResponseConstants.RETRIEVED_MSG,
+            status=status.HTTP_200_OK,
+            data=get_all_by_category(category, db, current_user),
+        )
 
 
 @router.get("/{product_id}/image", response_class=RedirectResponse)

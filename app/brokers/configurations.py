@@ -1,24 +1,38 @@
-from app.brokers.base import Broker
+from fastapi import HTTPException, status
+import requests
 
 
-class ConfigurationsBroker(Broker):
-    """
-    A broker to handle communication with the `Activities` service.
-    """
-    HOST = "127.0.0.1:8001/api"
+def get_countries():
+    url = "http://127.0.0.1:8001/countries/"
+    response = requests.get(url)
+    return response.json()
 
-    def __init__(self, request):
-        name = "Configurations"
-        super(ConfigurationsBroker, self).__init__(self.HOST, request, name)
 
-    # GET: /countries
-    def get_countries(self, response_message_key, **kwargs):
-        url = self.parse_url("countries")
+class CountryBroker:
+    def __init__(self):
+        self.host = "http://127.0.0.1:8001/countries/"
 
-        return self.send("GET", url, response_message_key, **kwargs, timeout=10)
+    # GET: // Countries
+    def get_countries(self):
+        response = requests.get(self.host)
+        print(response.json())
+        if response.status_code >= 200 and response.status_code <= 300:
+            return response.json()
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Service not available",
+            )
 
-    # GET: /countries/{alpha_2}
-    def get_country(self, alpha_2, response_message_key, **kwargs):
-        url = self.parse_url("countries", alpha_2)
-
-        return self.send("GET", url, response_message_key, **kwargs, timeout=10)
+    # GET: // Country
+    def get_country_by_id(self, id: int):
+        self.host = self.host + f"{id}/"
+        response = requests.get(self.host)
+        print(response.json())
+        if response.status_code >= 200 and response.status_code <= 300:
+            return response.json()
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Service not available",
+            )
