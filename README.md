@@ -3,8 +3,8 @@ Quickstart
 ----------
 
 First, clone the project on your local machine: ::
+https://github.com/zaid-zubi/Storehouse_project.git
 
-    git clone https://git-codecommit.eu-central-1.amazonaws.com/v1/repos/ahlipay-ekyc
 Then activate poetry by typing: ::
 
     poetry shell
