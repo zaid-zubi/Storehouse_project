@@ -34,39 +34,6 @@ Finally to run the app::
     or
 
     uvicorn app.main:app --reload --port {PORT_NUMBER}
-
-
-**Congratulations the service is working now**
-
-
-
-Very Important Notes
-----------
-**1- Frequently we find issues with migrations and this blocked services to be deployed.**
-
-
-
-please consider the below points to avoid these issues:
-please try to keep these notes in your mind
-
-- All Development must be done on local DB, not on AWS DB
-
-- Please don't run the "alembic upgrade head" while connecting to AWS database, for testing you can run this command on your local machine only.
-
-- Make sure to run an auto-generate command after any small/large edit on models.
-
-- Make sure to run the alembic upgrade head command after every migration file generation.
-
-- Don't remove any executed migration file.
-
-- Don't edit any executed migration file.
-
-- Also don’t forget to add each model you build, to the model’s __init__.py file to allow auto-generation of migration fiels.
-
-2- **Don't change the value of environment variable ENVIRONMENT, Keep it "local" always**
-
-
-
 API documentation
 ----------
 
