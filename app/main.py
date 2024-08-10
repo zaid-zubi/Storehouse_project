@@ -14,8 +14,8 @@ from integrations.aws_queue.sqs_consumer import sqs_event_listener
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Skeleton", docs_url="/skeleton/docs",
-              openapi_url="/skeleton/openapi.json")
+app = FastAPI(title="Storehouse", docs_url="/storehouse/docs",
+              openapi_url="/storehouse/openapi.json")
 
 
 @app.middleware("http")
@@ -51,7 +51,7 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Skeleton",
+        title="Storehouse",
         version="1.0.0",
         description="The documentation for Skeleton service",
         routes=app.routes,
